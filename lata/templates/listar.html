@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Pesquisa de Latas</title>
+
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #222;
+        margin: 0;
+        padding: 30px;
+    }
+
+    h1, h2 {
+        color: #1f2937;
+    }
+
+    a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    form {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    input, select, button {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    button {
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    .lata-card {
+        background: white;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 18px;
+    }
+
+    .lata-card h3 {
+        margin-top: 0;
+        color: #111827;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: bold;
+        background: #e5e7eb;
+        margin-right: 8px;
+    }
+
+    .acoes {
+        margin-top: 12px;
+    }
+
+    .acoes a {
+        margin-right: 12px;
+    }
+</style>
+
+</head>
+
+<body>
+
+    <h1>Lista de Latas</h1>
+
+    <a href="{% url 'adicionar_lata' %}">
+        Adicionar Lata
+    </a>
+
+    <form method="POST" enctype="multipart/form-data"></form>
+
+    <hr>
+
+    <h1>Pesquisar Latas</h1>
+
+    <form method="GET">
+
+        <input
+            type="text"
+            name="nome"
+            placeholder="Nome da lata"
+        >
+
+        <input
+            type="text"
+            name="marca"
+            placeholder="Marca"
+        >
+
+        <select name="portugal">
+
+            <option value="">
+                Disponível em Portugal?
+            </option>
+
+            <option value="sim">
+                Sim
+            </option>
+
+        </select>
+
+        <select name="descontinuada">
+
+            <option value="">
+                Descontinuada?
+            </option>
+
+            <option value="sim">
+                Sim
+            </option>
+
+        </select>
+
+        <button type="submit">
+
+            Pesquisar
+
+        </button>
+
+    </form>
+
+    <hr>
+
+
+{% for lata in latas %}
+
+<p>Imagem guardada: {{ lata.imagem }}</p>
+
+{% if lata.imagem %}
+    <img src="{{ lata.imagem.url }}" style="width:150px; border-radius:10px;">
+{% else %}
+    <p>Sem imagem</p>
+{% endif %}
+
+    <div class="lata-card">
+
+        {% if lata.imagem %}
+            <img src="{{ lata.imagem.url }}" style="width:150px; border-radius:10px;">
+        {% endif %}
+
+        <h3>{{ lata.nome }}</h3>
+
+        <p><strong>Marca:</strong> {{ lata.marca.nome_marca }}</p>
+        <p><strong>Tamanho:</strong> {{ lata.tamanho.tamanho }}</p>
+
+        <span class="badge">
+            Portugal: {{ lata.disponivel_portugal }}
+        </span>
+
+        <span class="badge">
+            Descontinuada: {{ lata.descontinuada }}
+        </span>
+
+        <div class="acoes">
+            <a href="{% url 'editar_lata' lata.id_lata %}">Editar</a>
+            <a href="{% url 'apagar_lata' lata.id_lata %}">Apagar</a>
+        </div>
+
+    </div>
+{% empty %}
+    <p>Não existem latas na base de dados.</p>
+{% endfor %}
+
+    <hr>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Apagar</title>
+
+</head>
+
+<body>
+
+    <h1>
+
+        Deseja apagar:
+
+        {{ lata.nome }} ?
+
+    </h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit">
+
+            Sim, apagar
+
+        </button>
+
+    </form>
+
+</body>
+
+</html>
