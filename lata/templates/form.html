@@ -6,27 +6,88 @@
 
     <title>{{ titulo }}</title>
 
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f2937;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 500px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+
 </head>
 
 <body>
 
-    <h1>{{ titulo }}</h1>
+<h1>{{ titulo }}</h1>
 
-    <form method="POST" enctype="multipart/form-data">
+    <div class="card">
 
-        {% csrf_token %}
+        {% if form.instance.imagem %}
+            <img src="{{ form.instance.imagem.url }}" style="width:120px; border-radius:10px; margin-bottom:10px;">
+        {% endif %}
 
-        {{ form.as_p }}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-        <button type="submit">
+            <button type="submit">Guardar</button>
 
-            Guardar
+            <a href="{% url 'listar_latas' %}" class="btn-secondary">
+                Cancelar
+            </a>
+        </form>
 
-        </button>
-
-    </form>
-
-
+    </div>
 
 </body>
 

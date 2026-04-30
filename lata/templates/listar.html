@@ -89,6 +89,39 @@
     .acoes a {
         margin-right: 12px;
     }
+
+    .top-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background: #2563eb;
+}
+
+.btn-success {
+    background: #16a34a;
+}
+
+.btn-danger {
+    background: #dc2626;
+}
 </style>
 
 </head>
@@ -97,11 +130,19 @@
 
     <h1>Lista de Latas</h1>
 
-    <a href="{% url 'adicionar_lata' %}">
-        Adicionar Lata
+    <div class="top-actions">
+    <a href="{% url 'adicionar_lata' %}" class="btn btn-primary">
+        ➕ Adicionar Lata
     </a>
 
-    <form method="POST" enctype="multipart/form-data"></form>
+    <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+        📊 Exportar Excel
+    </a>
+
+    <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">
+        📄 Exportar PDF
+    </a>
+</div>
 
     <hr>
 
@@ -157,16 +198,9 @@
 
 
 {% for lata in latas %}
-
-<p>Imagem guardada: {{ lata.imagem }}</p>
-
-{% if lata.imagem %}
-    <img src="{{ lata.imagem.url }}" style="width:150px; border-radius:10px;">
-{% else %}
-    <p>Sem imagem</p>
-{% endif %}
-
     <div class="lata-card">
+
+        <p>ID: {{ lata.id_lata }}</p>
 
         {% if lata.imagem %}
             <img src="{{ lata.imagem.url }}" style="width:150px; border-radius:10px;">
@@ -174,16 +208,11 @@
 
         <h3>{{ lata.nome }}</h3>
 
-        <p><strong>Marca:</strong> {{ lata.marca.nome_marca }}</p>
-        <p><strong>Tamanho:</strong> {{ lata.tamanho.tamanho }}</p>
+        <p>Marca: {{ lata.marca.nome_marca }}</p>
+        <p>Tamanho: {{ lata.tamanho.tamanho }}</p>
 
-        <span class="badge">
-            Portugal: {{ lata.disponivel_portugal }}
-        </span>
-
-        <span class="badge">
-            Descontinuada: {{ lata.descontinuada }}
-        </span>
+        <span class="badge">Portugal: {{ lata.disponivel_portugal }}</span>
+        <span class="badge">Descontinuada: {{ lata.descontinuada }}</span>
 
         <div class="acoes">
             <a href="{% url 'editar_lata' lata.id_lata %}">Editar</a>
@@ -194,7 +223,6 @@
 {% empty %}
     <p>Não existem latas na base de dados.</p>
 {% endfor %}
-
     <hr>
 </body>
 

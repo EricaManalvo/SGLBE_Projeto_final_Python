@@ -6,29 +6,73 @@
 
     <title>Apagar</title>
 
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1f2937;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 400px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+    </style>
+
 </head>
 
 <body>
 
-    <h1>
+      <h1>Apagar Lata</h1>
 
-        Deseja apagar:
+    <div class="card">
 
-        {{ lata.nome }} ?
+        <p>Deseja apagar: <strong>{{ lata.nome }}</strong>?</p>
 
-    </h1>
+        {% if lata.imagem %}
+            <img src="{{ lata.imagem.url }}" style="width:120px; border-radius:10px; margin-bottom:10px;">
+        {% endif %}
 
-    <form method="POST">
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger">Sim, apagar</button>
+            <a href="{% url 'listar_latas' %}">
+                <button type="button" class="btn-secondary">Cancelar</button>
+            </a>
+        </form>
 
-        {% csrf_token %}
-
-        <button type="submit">
-
-            Sim, apagar
-
-        </button>
-
-    </form>
+    </div>
 
 </body>
 
