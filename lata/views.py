@@ -1,9 +1,15 @@
+from urllib import request
+
 from django.shortcuts import render, redirect, get_object_or_404
+
+import lata
 from .models import Lata
 from .forms import LataForm 
 from django.http import HttpResponse
 from openpyxl import Workbook
 from reportlab.pdfgen import canvas
+from django.contrib.auth.decorators import login_required
+
 
 def listar_latas(request):
 
@@ -45,10 +51,15 @@ def listar_latas(request):
             descontinuada=True
         )
 
-    return render(request, 'listar.html', {'latas': latas})
+    return render(
+        request, 
+        'listar.html',
+        {
+            'latas': latas
+        }
+    )
 
-
-
+@login_required
 def adicionar_lata(request):
     if request.method == 'POST':
         form = LataForm(request.POST, request.FILES) 
@@ -69,7 +80,7 @@ def adicionar_lata(request):
     )
 
 
-
+@login_required
 def editar_lata(request, id):
 
     lata = get_object_or_404(
@@ -99,7 +110,7 @@ def editar_lata(request, id):
     )
 
 
-
+@login_required
 def apagar_lata(request, id):
 
     lata = get_object_or_404(
@@ -121,6 +132,7 @@ def apagar_lata(request, id):
         }
     )
 
+@login_required
 def exportar_excel(request):
     latas = Lata.objects.all()
 
@@ -159,6 +171,7 @@ def exportar_excel(request):
     wb.save(response)
     return response
 
+@login_required
 def exportar_pdf(request):
     latas = Lata.objects.all()
 
@@ -166,18 +179,34 @@ def exportar_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="latas.pdf"'
 
     p = canvas.Canvas(response)
-    p.drawString(100, 800, "Latas")
 
-    y = 780
+    y = 800
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, y, "Lista de Latas")
+    y -= 40
+
+    p.setFont("Helvetica", 10)
+
     for lata in latas:
+
+        if y < 120:
+            p.showPage()
+            y = 800
+            p.setFont("Helvetica-Bold", 16)
+            p.drawString(100, y, "Lista de Latas")
+            y -= 40
+            p.setFont("Helvetica", 10)
+
         p.drawString(100, y, f"ID: {lata.id_lata}")
-        p.drawString(100, y - 20, f"Nome: {lata.nome}")
-        p.drawString(100, y - 40, f"Marca: {lata.marca.nome_marca}")
-        p.drawString(100, y - 60, f"Tamanho: {lata.tamanho.tamanho}")
-        p.drawString(100, y - 80, f"Disponível em Portugal: {'Sim' if lata.disponivel_portugal else 'Não'}")
-        p.drawString(100, y - 100, f"Descontinuada: {'Sim' if lata.descontinuada else 'Não'}")
-        p.drawString(100, y - 120, f"Notas: {lata.notas}")
-        y -= 140
+        p.drawString(100, y - 15, f"Nome: {lata.nome}")
+        p.drawString(100, y - 30, f"Marca: {lata.marca.nome_marca}")
+        p.drawString(100, y - 45, f"Tamanho: {lata.tamanho.tamanho}")
+        p.drawString(100, y - 60, f"Portugal: {'Sim' if lata.disponivel_portugal else 'Não'}")
+        p.drawString(100, y - 75, f"Descontinuada: {'Sim' if lata.descontinuada else 'Não'}")
+        p.drawString(100, y - 90, f"Notas: {lata.notas}")
+
+        y -= 120
 
     p.save()
     return response
