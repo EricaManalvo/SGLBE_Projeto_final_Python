@@ -14,37 +14,25 @@ def listar_latas(request):
     latas = Lata.objects.all()
 
     nome = request.GET.get('nome')
-
     if nome:
-
         latas = latas.filter(
             nome__icontains=nome
         )
 
     marca = request.GET.get('marca')
-
     if marca:
-
         latas = latas.filter(
             marca__nome_marca__icontains=marca
         )
 
-
     portugal = request.GET.get('portugal')
-
     if portugal == 'sim':
-
         latas = latas.filter(
             disponivel_portugal=True
         )
         
-
-    descontinuada = request.GET.get(
-        'descontinuada'
-    )
-
+    descontinuada = request.GET.get('descontinuada')
     if descontinuada == 'sim':
-
         latas = latas.filter(
             descontinuada=True
         )
